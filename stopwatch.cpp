@@ -1,60 +1,45 @@
-#include "stopwatch.h"
+#include "Stopwatch.h"
 
-Stopwatch::Stopwatch(QObject *parent)
-    : QObject(parent), elapsedTime(0), lastLapTime(0), lapCount(0), running(false) {
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, [this]() {
-        elapsedTime += 100; // Увеличиваем время на 0.1 секунды
-        emit timeUpdated(getTime());
+Stopwatch::Stopwatch(QObject *parent) : QObject(parent) {
+    connect(&updateTimer, &QTimer::timeout, this, [this]() {
+        if (running) {
+            emit timeUpdated(timer.elapsed());
+        }
     });
 }
 
 void Stopwatch::start() {
     if (!running) {
-        timer->start(100);
         running = true;
+        timer.start();
+        lastLapTime = 0;
+        updateTimer.start(100);
     }
 }
 
 void Stopwatch::stop() {
     if (running) {
-        timer->stop();
         running = false;
+        updateTimer.stop();
     }
 }
 
 void Stopwatch::reset() {
     stop();
-    elapsedTime = 0;
     lastLapTime = 0;
-    lapCount = 0;
-    emit timeUpdated(getTime());
 }
 
-void Stopwatch::recordLap() {
-    if (running) {
-        ++lapCount;
-        qint64 lapTime = elapsedTime - lastLapTime;
-        lastLapTime = elapsedTime;
-    }
+bool Stopwatch::isRunning() const {
+    return running;
 }
 
-QString Stopwatch::getTime() const {
-    int milliseconds = elapsedTime % 1000;
-    int seconds = (elapsedTime / 1000) % 60;
-    int minutes = (elapsedTime / 60000) % 60;
-    return QString("%1:%2.%3")
-        .arg(minutes, 2, 10, QChar('0'))
-        .arg(seconds, 2, 10, QChar('0'))
-        .arg(milliseconds / 100, 1, 10, QChar('0'));
+qint64 Stopwatch::elapsed() const {
+    return timer.elapsed();
 }
 
-QString Stopwatch::getLastLapTime() const {
-    int lapMilliseconds = (elapsedTime - lastLapTime) % 1000;
-    int lapSeconds = ((elapsedTime - lastLapTime) / 1000) % 60;
-    int lapMinutes = ((elapsedTime - lastLapTime) / 60000) % 60;
-    return QString("%1:%2.%3")
-        .arg(lapMinutes, 2, 10, QChar('0'))
-        .arg(lapSeconds, 2, 10, QChar('0'))
-        .arg(lapMilliseconds / 100, 1, 10, QChar('0'));
+qint64 Stopwatch::lapTime() {
+    qint64 currentTime = timer.elapsed();
+    qint64 lap = currentTime - lastLapTime;
+    lastLapTime = currentTime;
+    return lap;
 }

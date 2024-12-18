@@ -2,6 +2,7 @@
 #define STOPWATCH_H
 
 #include <QObject>
+#include <QElapsedTimer>
 #include <QTimer>
 
 class Stopwatch : public QObject {
@@ -9,24 +10,23 @@ class Stopwatch : public QObject {
 
 public:
     explicit Stopwatch(QObject *parent = nullptr);
+
     void start();
     void stop();
     void reset();
-    void recordLap();
-    QString getTime() const;         // Возвращает строку времени
-    QString getLastLapTime() const; // Возвращает строку последнего круга
-    int getLapCount() const { return lapCount; }
-    bool isRunning() const { return running; }
+    bool isRunning() const;
+
+    qint64 elapsed() const;
+    qint64 lapTime();
 
 signals:
-    void timeUpdated(const QString &time);
+    void timeUpdated(qint64 milliseconds);
 
 private:
-    QTimer *timer;
-    qint64 elapsedTime;      // Общее время в миллисекундах
-    qint64 lastLapTime;      // Время предыдущего круга
-    int lapCount;            // Счётчик кругов
-    bool running;            // Флаг, указывающий на работу секундомера
+    bool running = false;
+    QElapsedTimer timer;
+    QTimer updateTimer;
+    qint64 lastLapTime = 0;
 };
 
 #endif // STOPWATCH_H

@@ -1,42 +1,21 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.16)
+project(StopwatchApp)
 
-# Имя проекта
-project(StopwatchApp LANGUAGES CXX)
-
-# Установить стандарт C++
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Найти Qt6 модули
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
-# Указать исходные файлы
-set(SOURCES
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+add_executable(${PROJECT_NAME}
     main.cpp
-    mainwindow.cpp
-    stopwatch.cpp
-)
-
-set(HEADERS
-    mainwindow.h
-    stopwatch.h
-)
-
-set(UI
+    MainWindow.cpp
+    MainWindow.h
+    Stopwatch.cpp
+    Stopwatch.h
     mainwindow.ui
 )
 
-# Создание исполняемого файла
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI})
-
-# Подключить Qt6 библиотеки
-target_link_libraries(${PROJECT_NAME} Qt6::Widgets)
-
-# Указать путь для сборки MOC, UI и других временных файлов
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    AUTOMOC ON
-    AUTOUIC ON
-    AUTORCC ON)
-
-# Указать включаемые директории
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${PROJECT_NAME} Qt6::Core Qt6::Widgets)

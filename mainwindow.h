@@ -2,11 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "stopwatch.h"
+#include "Stopwatch.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -17,13 +17,15 @@ public:
 
 private slots:
     void onStartStopClicked();
-    void onResetClicked();
     void onLapClicked();
-    void updateTime(const QString &time);
+    void onResetClicked();
+
+    void updateTimeDisplay(qint64 milliseconds);
 
 private:
     Ui::MainWindow *ui;
     Stopwatch *stopwatch;
+    int lapCounter = 0;
 };
 
 #endif // MAINWINDOW_H
