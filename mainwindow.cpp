@@ -36,10 +36,10 @@ void MainWindow::onLapClicked() {
 }
 
 void MainWindow::onResetClicked() {
-    stopwatch->reset();
-    lapCounter = 0;
-    ui->timeLabel->setText("0:00.0");
-    ui->lapsBrowser->clear();
+    lapCounter = 0;                      // Сброс счётчика кругов
+    ui->lapsBrowser->clear();            // Очистка текстового браузера
+    stopwatch->restart();                // Перезапуск таймера для начала с 0
+    ui->timeLabel->setText("0:00.0");    // Установка метки на начальное значение
 }
 
 void MainWindow::updateTimeDisplay(qint64 milliseconds) {

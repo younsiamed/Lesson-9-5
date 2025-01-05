@@ -25,7 +25,16 @@ void Stopwatch::stop() {
 }
 
 void Stopwatch::reset() {
-    stop();
+    timer.invalidate(); // Invalidate the timer
+    lastLapTime = 0;
+}
+
+void Stopwatch::resetLapTime() {
+    lastLapTime = timer.elapsed(); // Сброс времени круга на текущее прошедшее время
+}
+
+void Stopwatch::restart() {
+    timer.start();  // Перезапуск таймера
     lastLapTime = 0;
 }
 
@@ -34,11 +43,11 @@ bool Stopwatch::isRunning() const {
 }
 
 qint64 Stopwatch::elapsed() const {
-    return timer.elapsed();
+    return timer.isValid() ? timer.elapsed() : 0;
 }
 
 qint64 Stopwatch::lapTime() {
-    qint64 currentTime = timer.elapsed();
+    qint64 currentTime = elapsed();
     qint64 lap = currentTime - lastLapTime;
     lastLapTime = currentTime;
     return lap;

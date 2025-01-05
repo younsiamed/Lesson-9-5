@@ -14,6 +14,8 @@ public:
     void start();
     void stop();
     void reset();
+    void resetLapTime();
+    void restart();
     bool isRunning() const;
 
     qint64 elapsed() const;
